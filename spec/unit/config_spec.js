@@ -150,8 +150,8 @@ describe('Config', function () {
     })
   );
 
-  describe('keepAlive', () =>
-    it('defaults enabled', function () {
+  describe('keepAlive', () => {
+    it('defaults to disabled', function () {
       let config = new Config({
         merchantId: 'merchantId',
         publicKey: 'publicKey',
@@ -159,9 +159,26 @@ describe('Config', function () {
         environment: 'development'
       });
 
+      assert.equal(config.keepAliveAgentEnabled, false);
       assert.equal(config.keepAliveConfig.keepAlive, true);
-    })
-  );
+    });
+
+    it('is enabled when user passes in a config', function () {
+      let config = new Config({
+        merchantId: 'merchantId',
+        publicKey: 'publicKey',
+        privateKey: 'privateKey',
+        environment: 'development',
+        keepAlive: {
+          keepAliveMsecs: 9001
+        }
+      });
+
+      assert.equal(config.keepAliveAgentEnabled, true);
+      assert.equal(config.keepAliveConfig.keepAlive, true);
+      assert.equal(config.keepAliveConfig.keepAliveMsecs, 9001);
+    });
+  });
 
   describe('accessToken', function () {
     it('uses accessToken parsed environment', function () {
